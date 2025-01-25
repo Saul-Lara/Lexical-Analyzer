@@ -62,3 +62,76 @@ class Lexer:
             if self.position < len(self.input)
             else None
         )
+
+    def extract_tokens(self):
+        """Tokenizes the input text and generates a list of tokens.
+
+        Returns:
+            list: A list of Token objects representing the parsed tokens.
+        """
+        is_newline = True
+        is_rem = False
+        tokens = []
+
+        while self.current_char is not None:
+            char = self.current_char
+
+            # Handle newlines
+            if char == "\n":
+                is_newline = True
+                self.advance()
+                continue
+
+            # Skip whitespace
+            elif char.isspace():
+                self.advance()
+                continue
+
+            # Line must start with a line number
+            if is_newline and self.current_char in TokenType.DIGITS:
+                token_value = self.recognize_number()
+                tokens.append(
+                    Token(TokenType.LINENUMBER, token_value, token_value)
+                )
+                self.line = token_value
+                is_newline = False
+
+            # Handle comments
+            elif (
+                is_rem
+                and self.current_char in TokenType.LETTERS + TokenType.DIGITS
+            ):
+                tokens.append(
+                    Token(
+                        TokenType.COMMENT, self.recognize_comment(), self.line
+                    )
+                )
+                is_rem = False
+
+            # Get numbers
+            elif self.current_char in TokenType.DIGITS:
+                tokens.append(
+                    Token(TokenType.NUMBER, self.recognize_number(), self.line)
+                )
+
+            # Get strings
+            elif self.current_char == '"':
+                tokens.append(
+                    Token(TokenType.STRING, self.recognize_string(), self.line)
+                )
+
+            # Get identifiers
+            elif self.current_char in TokenType.LETTERS:
+                token_value = self.recognize_identifier()
+                token_type = self.recognize_token_type(token_value)
+                if token_value == "REM":
+                    is_rem = True
+                tokens.append(Token(token_type, token_value, self.line))
+
+            # Get operators
+            elif self.current_char in TokenType.SYMBOLS:
+                token_value = self.recognize_operator()
+                token_type = self.recognize_token_type(token_value)
+                tokens.append(Token(token_type, token_value, self.line))
+
+        return tokens
