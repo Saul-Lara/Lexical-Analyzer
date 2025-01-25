@@ -150,3 +150,15 @@ class Lexer:
                 tokens.append(Token(token_type, token_value, self.line))
 
         return tokens
+
+    def recognize_number(self):
+        number = ""
+
+        while (
+            self.current_char
+            and self.current_char in TokenType["DIGITS"].value
+        ):
+            number += self.current_char
+            self.advance()
+
+        return number
