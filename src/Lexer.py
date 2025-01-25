@@ -1,5 +1,7 @@
 import re
 
+from TokenType import TokenType
+
 
 class Token:
     """Represents a 'Token' identified during the analysis.
@@ -30,6 +32,7 @@ class Lexer:
         input: A string with the source code to tokenize.
         position: Current position in the source code.
         current_char: Current character being processed.
+        line: Current line number
     """
 
     def __init__(self, input: str):
@@ -41,3 +44,21 @@ class Lexer:
         self.input = input
         self.position = 0
         self.current_char = self.input[self.position]
+        self.line = 0
+
+    def advance(self):
+        """Moves the current position in the input string.
+
+        Args:
+            None
+
+        Updates:
+            position: Increments by 1 to indicate the next character position.
+            current_char: The next character in the input string or `None` if the end of the string is reached.
+        """
+        self.position += 1
+        self.current_char = (
+            self.input[self.position]
+            if self.position < len(self.input)
+            else None
+        )
