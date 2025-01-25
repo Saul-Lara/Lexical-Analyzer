@@ -88,10 +88,14 @@ class Lexer:
                 continue
 
             # Line must start with a line number
-            if is_newline and self.current_char in TokenType.DIGITS:
+            if is_newline and self.current_char in TokenType["DIGITS"].value:
                 token_value = self.recognize_number()
                 tokens.append(
-                    Token(TokenType.LINENUMBER, token_value, token_value)
+                    Token(
+                        TokenType["LINE_NUMBER"].value,
+                        token_value,
+                        token_value,
+                    )
                 )
                 self.line = token_value
                 is_newline = False
@@ -99,29 +103,40 @@ class Lexer:
             # Handle comments
             elif (
                 is_rem
-                and self.current_char in TokenType.LETTERS + TokenType.DIGITS
+                and self.current_char
+                in TokenType["LETTERS"].value + TokenType["DIGITS"].value
             ):
                 tokens.append(
                     Token(
-                        TokenType.COMMENT, self.recognize_comment(), self.line
+                        TokenType["COMMENT"].value,
+                        self.recognize_comment(),
+                        self.line,
                     )
                 )
                 is_rem = False
 
             # Get numbers
-            elif self.current_char in TokenType.DIGITS:
+            elif self.current_char in TokenType["DIGITS"].value:
                 tokens.append(
-                    Token(TokenType.NUMBER, self.recognize_number(), self.line)
+                    Token(
+                        TokenType["NUMBER"].value,
+                        self.recognize_number(),
+                        self.line,
+                    )
                 )
 
             # Get strings
             elif self.current_char == '"':
                 tokens.append(
-                    Token(TokenType.STRING, self.recognize_string(), self.line)
+                    Token(
+                        TokenType["STRING"].value,
+                        self.recognize_string(),
+                        self.line,
+                    )
                 )
 
             # Get identifiers
-            elif self.current_char in TokenType.LETTERS:
+            elif self.current_char in TokenType["LETTERS"].value:
                 token_value = self.recognize_identifier()
                 token_type = self.recognize_token_type(token_value)
                 if token_value == "REM":
@@ -129,7 +144,7 @@ class Lexer:
                 tokens.append(Token(token_type, token_value, self.line))
 
             # Get operators
-            elif self.current_char in TokenType.SYMBOLS:
+            elif self.current_char in TokenType["SYMBOLS"].value:
                 token_value = self.recognize_operator()
                 token_type = self.recognize_token_type(token_value)
                 tokens.append(Token(token_type, token_value, self.line))
