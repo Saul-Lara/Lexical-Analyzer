@@ -226,3 +226,20 @@ class Lexer:
 
         # Default type
         return TokenType["UNKNOWN"].value
+
+    def recognize_operator(self):
+        """Recognizes and returns the value of operator detected.
+
+        Returns:
+            symbol: A string with the operator value.
+        """
+        symbol = ""
+
+        while (
+            self.current_char
+            and self.current_char in TokenType["SYMBOLS"].value
+        ):
+            symbol += self.current_char
+            self.advance()
+
+        return symbol
