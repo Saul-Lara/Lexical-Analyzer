@@ -184,3 +184,45 @@ class Lexer:
             self.advance()
 
         return identifier
+
+    def recognize_token_type(self, token_value: str):
+        """Recognizes and returns the type of token value given.
+
+        Args:
+            token_type: The token value to classify.
+
+        Returns:
+            identifier: A string with the token type corresponding to the given token value.
+        """
+        # Mapping specific token values to their types
+        token_type_map = {
+            "OR": TokenType["OR"].value,
+            ";": TokenType["SEMMICOLON"].value,
+            "<=": TokenType["LE"].value,
+            ">=": TokenType["GE"].value,
+            "+": TokenType["PLUS"].value,
+            "-": TokenType["MINUS"].value,
+            "*": TokenType["TIMES"].value,
+            "/": TokenType["DIVIDE"].value,
+            "=": TokenType["EQUALS"].value,
+            "<>": TokenType["NE"].value,
+        }
+
+        # Check for keywords
+        if token_value.upper() in TokenType["BASIC_KEYWORDS"].value:
+            return TokenType["KEYWORD"].value
+
+        # Check the token_type_map for predefined matches
+        if token_value in token_type_map:
+            return token_type_map[token_value]
+
+        # Check for alphanumeric identifier
+        if re.match(r"[A-Z][A-Z]*\${1}$", token_value.upper()):
+            return TokenType["ALNUM_IDENTIFIER"].value
+
+        # Check for numeric identifier
+        if re.match(r"[A-Z][A-Z]*$", token_value.upper()):
+            return TokenType["NUM_IDENTIFIER"].value
+
+        # Default type
+        return TokenType["UNKNOWN"].value
