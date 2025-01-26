@@ -167,3 +167,20 @@ class Lexer:
             self.advance()
 
         return number
+
+    def recognize_identifier(self):
+        """Recognizes and returns the value of identifier detected.
+
+        Returns:
+            identifier: A string with the identifier.
+        """
+        identifier = ""
+        while (
+            self.current_char
+            and self.current_char
+            in TokenType["LETTERS"].value + TokenType["DIGITS"].value
+        ):
+            identifier += self.current_char
+            self.advance()
+
+        return identifier
