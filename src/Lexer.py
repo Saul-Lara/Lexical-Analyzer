@@ -152,6 +152,11 @@ class Lexer:
         return tokens
 
     def recognize_number(self):
+        """Recognizes and returns the value of number detected.
+
+        Returns:
+            number: A string with the number value.
+        """
         number = ""
 
         while (
