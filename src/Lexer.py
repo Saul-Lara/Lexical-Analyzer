@@ -260,3 +260,17 @@ class Lexer:
         self.advance()
 
         return string
+
+    def recognize_comment(self):
+        """Recognizes and returns the value of a comment.
+
+        Returns:
+            comment: A string with the comment value.
+        """
+        comment = ""
+
+        while self.current_char and self.current_char != "\n":
+            comment += self.current_char
+            self.advance()
+
+        return comment
