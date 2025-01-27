@@ -243,3 +243,20 @@ class Lexer:
             self.advance()
 
         return symbol
+
+    def recognize_string(self):
+        """Recognizes and returns the value of a string detected.
+
+        Returns:
+            string: A string with the string value.
+        """
+        string = ""
+        self.advance()
+
+        while self.current_char and self.current_char != '"':
+            string += self.current_char
+            self.advance()
+
+        self.advance()
+
+        return string
