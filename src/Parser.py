@@ -149,3 +149,57 @@ class Parser:
                 return {"successful": False, "message": error_message}
 
         return analisys_result
+
+    def error_handler(
+        self,
+        previous_state_dict: dict,
+        input_transitions_map: dict = input_transitions_map,
+    ):
+        """Handles syntax errors by identifying expected inputs and generating an error message.
+
+        Args:
+            previous_state_dict: A dictionary representing the previous state transitions.
+            input_transitions_map: A mapping of valid state transitions.
+
+        Returns:
+            message: An error message indicating the expected inputs and the line number where
+                 the syntax error occurred.
+        """
+        expected_inputs = []
+        row_input_transitions_map = {}
+
+        # Swapping key and values of input_transitions_map
+        for item in input_transitions_map:
+            row_input_transitions_map.setdefault(
+                input_transitions_map[item], []
+            ).append(item)
+
+        # Mapping specific token values to their symbols
+        token_type_map = {
+            TokenType["SEMMICOLON"].value: ";",
+            TokenType["LE"].value: "<=",
+            TokenType["GE"].value: ">=",
+            TokenType["PLUS"].value: "+",
+            TokenType["MINUS"].value: "-",
+            TokenType["TIMES"].value: "*",
+            TokenType["DIVIDE"].value: "/",
+            TokenType["EQUALS"].value: "=",
+            TokenType["NE"].value: "<>",
+        }
+
+        # Collect expected inputs for the previous state
+        expected_inputs = [
+            row_input_transitions_map[element]
+            for element in previous_state_dict
+        ]
+
+        # Flatten the list of lists
+        expected_inputs = [item for row in expected_inputs for item in row]
+
+        # Add symbolic representations where applicable
+        for index, value in enumerate(expected_inputs):
+            if value in token_type_map:
+                expected_inputs[index] += " (" + token_type_map[value] + ")"
+
+        message = f"Syntax error: Expected {', '.join(expected_inputs)} in line {self.line}"
+        return message
