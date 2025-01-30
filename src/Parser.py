@@ -114,3 +114,38 @@ class Parser:
         self.tokens_list = tokens
         self.line = 0
         self.current_state = 0
+
+    def validate_syntax(self):
+        """Validates the sequence of tokens based on the FSM transition states.
+
+        Returns:
+            analisys_result: A dictionary with:
+            - "successful": True if analysis completes without errors, False otherwise.
+            - "message": A success message or an error description.
+        """
+        analisys_result = {
+            "successful": True,
+            "message": "No errors found. Analysis successful.",
+        }
+
+        for token in self.tokens_list:
+            transition_column = (
+                input_transitions_map[token.value]
+                if token.type == "KEYWORD"
+                else input_transitions_map[token.type]
+            )
+
+            previous_state = self.current_state
+            self.line = token.line
+
+            self.current_state = sparse_transitions_table[
+                self.current_state
+            ].get(transition_column, -1)
+
+            if self.current_state == -1:
+                error_message = self.error_handler(
+                    sparse_transitions_table[previous_state]
+                )
+                return {"successful": False, "message": error_message}
+
+        return analisys_result
