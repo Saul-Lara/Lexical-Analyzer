@@ -136,6 +136,8 @@ class Parser:
             )
 
             previous_state = self.current_state
+            previous_line = self.line
+            
             self.line = token.line
 
             self.current_state = sparse_transitions_table[
@@ -144,7 +146,8 @@ class Parser:
 
             if self.current_state == -1:
                 error_message = self.error_handler(
-                    sparse_transitions_table[previous_state]
+                    sparse_transitions_table[previous_state],
+                    previous_line
                 )
                 return {"successful": False, "message": error_message}
 
@@ -153,6 +156,7 @@ class Parser:
     def error_handler(
         self,
         previous_state_dict: dict,
+        previous_line: int,
         input_transitions_map: dict = input_transitions_map,
     ):
         """Handles syntax errors by identifying expected inputs and generating an error message.
@@ -201,5 +205,5 @@ class Parser:
             if value in token_type_map:
                 expected_inputs[index] += " (" + token_type_map[value] + ")"
 
-        message = f"Syntax error: Expected {', '.join(expected_inputs)} in line {self.line}"
+        message = f"Syntax error: Expected {', '.join(expected_inputs)} in line {previous_line}"
         return message
