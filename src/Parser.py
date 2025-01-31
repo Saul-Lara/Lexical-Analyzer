@@ -1,4 +1,4 @@
-from TokenType import TokenType
+from src.TokenType import TokenType
 
 # Mapping specific token types to their column in the transition table
 input_transitions_map = {

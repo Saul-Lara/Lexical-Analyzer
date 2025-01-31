@@ -1,6 +1,6 @@
 import re
 
-from TokenType import TokenType
+from src.TokenType import TokenType
 
 
 class Token:
