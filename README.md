@@ -13,9 +13,13 @@ It reads raw source code, identifies lexemes, and generates tokens, laying the f
 
 ## :pushpin: Features
 :white_check_mark: Tokenizes source code into keywords, identifiers, numbers, and operators.
+
 :white_check_mark: Built-in finite state machine (FSM) to ensure proper token recognition.
+
 :white_check_mark: Tkinter GUI for an interactive and user-friendly experience.
+
 :white_check_mark: Error Handling: Displays syntax errors with expected inputs.
+
 :white_check_mark: Automated Testing: Includes unit tests with pytest.
 
 ## :rocket: Built With
